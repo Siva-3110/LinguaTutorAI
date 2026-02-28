@@ -1,3 +1,4 @@
+// Controller to manage chat interactions with AI
 import { generateAIResponse } from '../services/aiService.js';
 
 export const handleChat = async (req, res) => {
