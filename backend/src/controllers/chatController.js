@@ -1,20 +1,20 @@
-import { generateResponse } from '../services/chatService.js';
+import { generateAIResponse } from '../services/aiService.js';
 
 export const handleChat = async (req, res) => {
     try {
-        const { message } = req.body;
+        const { message, language, subject, history } = req.body;
 
         if (!message) {
             return res.status(400).json({ error: 'Message is required' });
         }
 
-        const reply = await generateResponse(message);
+        const aiResponse = await generateAIResponse(message, language || 'en', subject || 'general', history || []);
 
         res.json({
-            reply
+            reply: aiResponse
         });
     } catch (error) {
         console.error('Error handling chat:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: error.message || 'Internal server error' });
     }
 };
