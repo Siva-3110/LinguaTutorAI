@@ -3,6 +3,9 @@ import { Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Tutor from './pages/Tutor';
+import Dashboard from './pages/Dashboard';
+import Quiz from './pages/Quiz';
+import Admin from './pages/Admin';
 
 const AppRoutes = () => {
   return (
@@ -10,8 +13,9 @@ const AppRoutes = () => {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />
         <Route path="tutor" element={<Tutor />} />
-        {/* Dashboard will be added later */}
-        <Route path="dashboard" element={<div className="p-8 text-center text-gray-500">Dashboard UI coming soon</div>} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="quiz" element={<Quiz />} />
+        <Route path="admin" element={<Admin />} />
       </Route>
     </Routes>
   );

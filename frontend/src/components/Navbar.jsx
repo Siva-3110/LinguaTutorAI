@@ -5,11 +5,10 @@ const Navbar = () => {
   const location = useLocation();
 
   const getLinkClass = (path) => {
-    return `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-      location.pathname === path 
-        ? 'bg-blue-600 text-white' 
+    return `px-3 py-2 rounded-md text-sm font-medium transition-colors ${location.pathname === path
+        ? 'bg-blue-600 text-white'
         : 'text-gray-700 hover:bg-gray-100'
-    }`;
+      }`;
   };
 
   return (
@@ -25,7 +24,10 @@ const Navbar = () => {
             <Link to="/" className={getLinkClass('/')}>Home</Link>
             <Link to="/tutor" className={getLinkClass('/tutor')}>Tutor</Link>
             <Link to="/dashboard" className={getLinkClass('/dashboard')}>Dashboard</Link>
+            <Link to="/quiz" className={getLinkClass('/quiz')}>Quiz</Link>
+            <Link to="/admin" className={getLinkClass('/admin')}>Admin Room</Link>
           </div>
+
         </div>
       </div>
     </nav>
