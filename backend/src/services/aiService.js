@@ -1,3 +1,4 @@
+// Handles communication with LLM API for tutoring responses
 import axios from 'axios';
 
 export const generateAIResponse = async (userMessage, languageCode, subject, history) => {
