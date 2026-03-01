@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useChat from '../hooks/useChat';
-import useVoiceRecorder from '../hooks/useVoiceRecorder';
+import useChat from '../hooks/useChat';
 import useSpeech from '../hooks/useSpeech';
 import MessageBubble from './MessageBubble';
 import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX } from 'lucide-react';
@@ -9,9 +9,10 @@ import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX } from 'lucide-
 const ChatBox = () => {
     const { messages, isTyping, sendMessage, language, setLanguage } = useChat();
     const [input, setInput] = useState('');
-    const [isTranscribing, setIsTranscribing] = useState(false);
+    const [isListening, setIsListening] = useState(false);
     const [autoPlay, setAutoPlay] = useState(true);
     const messagesEndRef = useRef(null);
+    const recognitionRef = useRef(null);
     const { speak, stop } = useSpeech();
 
     // Auto-play AI messages
@@ -34,59 +35,70 @@ const ChatBox = () => {
         }
     }, [messages, isTyping, autoPlay, language, speak]);
 
-    // AI Voice Transcription Logic
-    const handleAudioReady = async (audioBlob) => {
-        setIsTranscribing(true);
-        try {
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'recording.webm');
-
-            const response = await fetch('http://localhost:5000/api/voice/transcribe', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (data.success && data.text) {
-                setInput(data.text);
-            } else {
-                console.warn("Backend transcription failed, attempting browser fallback");
-                fallbackToBrowserSpeech();
-            }
-        } catch (error) {
-            console.error("Transcription error:", error);
-            fallbackToBrowserSpeech();
-        } finally {
-            setIsTranscribing(false);
-        }
-    };
-
-    const fallbackToBrowserSpeech = () => {
+    // Native Browser Speech Recognition Logic
+    useEffect(() => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("Speech recognition is not supported in this browser.");
-            return;
-        }
+        if (!SpeechRecognition) return;
 
         const recognition = new SpeechRecognition();
-        recognition.lang = language === 'ta' ? 'ta-IN' : language === 'hi' ? 'hi-IN' : 'en-US';
-        recognition.interimResults = false;
+        recognition.continuous = false;
+        recognition.interimResults = true;
         recognition.maxAlternatives = 1;
 
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                transcript += event.results[i][0].transcript;
+            }
+            // Update input visually while speaking
             setInput(transcript);
         };
 
         recognition.onerror = (event) => {
             console.error("Browser speech recognition error:", event.error);
+            if (event.error !== 'no-speech') {
+                alert(`Microphone Error: ${event.error}. Please ensure hardware is connected and permissions are granted.`);
+            }
+            setIsListening(false);
         };
 
-        recognition.start();
-    };
+        recognition.onend = () => {
+            setIsListening(false);
+        };
 
-    const { isRecording, startRecording, stopRecording, error: recordError } = useVoiceRecorder(handleAudioReady);
+        recognitionRef.current = recognition;
+
+    }, []);
+
+    // Update language dynamically without recreating the whole object
+    useEffect(() => {
+        if (recognitionRef.current) {
+            recognitionRef.current.lang = language === 'ta' ? 'ta-IN' : language === 'hi' ? 'hi-IN' : 'en-US';
+        }
+    }, [language]);
+
+
+    const toggleListening = () => {
+        if (!recognitionRef.current) {
+            alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+            return;
+        }
+
+        if (isListening) {
+            recognitionRef.current.stop();
+            setIsListening(false);
+        } else {
+            setInput(''); // Clear input before new recording
+            try {
+                recognitionRef.current.start();
+                setIsListening(true);
+            } catch (e) {
+                console.error("Failed to start listening", e);
+                // Sometimes if it's already started but state is out of sync
+                recognitionRef.current.stop();
+            }
+        }
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -193,9 +205,9 @@ const ChatBox = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder={isRecording ? "Listening..." : isTranscribing ? "Transcribing..." : "Type a message..."}
-                            disabled={isTyping || isRecording || isTranscribing}
-                            className={`relative w-full px-6 py-4 bg-slate-950/80 border ${isRecording ? 'border-pink-500 shadow-[inset_0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-700/50'} rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-500 text-base transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50`}
+                            placeholder={isListening ? "Listening..." : "Type a message..."}
+                            disabled={isTyping || isListening}
+                            className={`relative w-full px-6 py-4 bg-slate-950/80 border ${isListening ? 'border-pink-500 shadow-[inset_0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-700/50'} rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-500 text-base transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50`}
                         />
                     </div>
 
@@ -204,21 +216,21 @@ const ChatBox = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         type="button"
-                        onClick={isRecording ? stopRecording : startRecording}
-                        disabled={isTyping || isTranscribing}
+                        onClick={toggleListening}
+                        disabled={isTyping}
                         className={`relative flex items-center justify-center p-4 rounded-xl transition font-semibold flex-shrink-0 border 
-                            ${isRecording
+                            ${isListening
                                 ? 'bg-pink-600/20 text-pink-400 border-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.6)] animate-pulse'
                                 : 'bg-slate-900 border-slate-700/50 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 shadow-[0_0_10px_rgba(0,0,0,0.3)]'
                             } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
-                        {isRecording ? (
+                        {isListening ? (
                             <div className="relative flex items-center justify-center">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-60"></span>
                                 <div className="w-3 h-3 bg-pink-500 rounded-sm animate-pulse relative z-10"></div>
                             </div>
                         ) : (
-                            <Mic size={24} className={isRecording ? "drop-shadow-[0_0_8px_rgba(236,72,153,1)]" : ""} />
+                            <Mic size={24} className={isListening ? "drop-shadow-[0_0_8px_rgba(236,72,153,1)]" : ""} />
                         )}
                     </motion.button>
                     <motion.button
