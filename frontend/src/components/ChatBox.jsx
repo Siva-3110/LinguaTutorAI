@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useChat from '../hooks/useChat';
-import useChat from '../hooks/useChat';
 import useSpeech from '../hooks/useSpeech';
 import MessageBubble from './MessageBubble';
 import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX } from 'lucide-react';
