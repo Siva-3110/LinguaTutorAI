@@ -1,5 +1,7 @@
 // Controller to manage chat interactions with AI
 import { generateAIResponse } from '../services/aiService.js';
+import { generateFallbackResponse } from '../services/edgeAIService.js';
+import { appCache } from '../utils/cache.js';
 
 export const handleChat = async (req, res) => {
     try {
@@ -9,13 +11,28 @@ export const handleChat = async (req, res) => {
             return res.status(400).json({ error: 'Message is required' });
         }
 
+        // Check Cache first
+        const cacheKey = `chat_${message}_${language || 'en'}_${subject || 'general'}`;
+        const cachedResponse = appCache.get(cacheKey);
+
+        if (cachedResponse) {
+            console.log("Serving chat response from cache");
+            return res.json({ reply: cachedResponse, cached: true });
+        }
+
         const aiResponse = await generateAIResponse(message, language || 'en', subject || 'general', history || []);
+
+        // Save to cache
+        appCache.set(cacheKey, aiResponse);
 
         res.json({
             reply: aiResponse
         });
     } catch (error) {
-        console.error('Error handling chat:', error);
-        res.status(500).json({ error: error.message || 'Internal server error' });
+        console.warn('Primary AI Error, falling back to Edge AI:', error.message);
+
+        // Edge AI Fallback
+        const edgeResponse = generateFallbackResponse(req.body.message);
+        return res.json({ reply: edgeResponse, edgeMode: true });
     }
 };

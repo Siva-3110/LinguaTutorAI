@@ -3,10 +3,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const genai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
+// Graceful fallback if no API key is present
+const ai = process.env.GOOGLE_API_KEY ? new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY }) : null;
 
 export const generateQuiz = async (topic, difficulty, numQuestions = 5) => {
     try {
+        if (!ai) {
+            throw new Error('Google API Key not configured. Cannot generate quiz.');
+        }
+
         const prompt = `Generate a ${numQuestions}-question quiz about "${topic}" at a "${difficulty}" difficulty level. 
     Include a mix of Multiple Choice (MCQ) and Short Answer questions.
     Return ONLY a raw JSON array of objects with this format completely unformatted, with no markdown, just the raw json:
