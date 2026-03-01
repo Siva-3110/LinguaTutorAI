@@ -72,6 +72,17 @@ const useSpeech = () => {
             synthRef.current.cancel();
         }
 
+        if (!text) return;
+
+        // Re-adding variables accidentally deleted during the chunking update!
+        const targetLang = getVoiceLangCode(lang);
+        const voice = voices.find(v => v.lang === targetLang || v.lang.startsWith(targetLang.split('-')[0]));
+        if (voice) {
+            console.log("[useSpeech] Matched specific voice:", voice.name, voice.lang);
+        } else {
+            console.log("[useSpeech] No specific voice match found for target lang:", targetLang, "using default.");
+        }
+
         // Critical Fix: Chromium has a widespread bug where long strings silently fail to play.
         // We bypass this by chunking the text by punctuation.
         const chunks = text.match(/[^.!?]+[.!?]+/g) || [text]; // Split by sentences
