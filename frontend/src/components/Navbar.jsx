@@ -27,10 +27,10 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
 
           <div className="flex items-center space-x-4">
-            <button className="sm:hidden p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-slate-800/50 transition-colors">
+            <button className="sm:hidden p-2 rounded-lg text-slate-400 hover:text-blue-400 hover:bg-slate-800/50 transition-colors">
               <Menu size={24} />
             </button>
-            <h2 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 tracking-wide uppercase drop-shadow-[0_0_5px_rgba(0,245,255,0.3)]">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-100">
               {getPageTitle(location.pathname)}
             </h2>
           </div>
@@ -38,12 +38,12 @@ const Navbar = () => {
           <div className="flex flex-1 justify-center max-w-lg mx-4 hidden md:flex">
             <div className="relative w-full max-w-md group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-cyan-500 group-focus-within:text-pink-500 transition-colors" />
+                <Search className="h-5 w-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
               </div>
               <input
                 type="text"
-                placeholder="Search database..."
-                className="block w-full pl-10 pr-3 py-2 border border-slate-700 rounded-lg leading-5 bg-slate-900/50 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500 focus:bg-slate-900 transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] sm:text-sm"
+                placeholder="Search..."
+                className="block w-full pl-10 pr-3 py-2 border border-slate-700 rounded-lg leading-5 bg-slate-900/50 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-slate-900 transition-all shadow-inner sm:text-sm"
               />
             </div>
           </div>
@@ -52,13 +52,13 @@ const Navbar = () => {
             {/* AI Status Badge */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="hidden sm:flex items-center px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-900/20 shadow-[0_0_10px_rgba(0,245,255,0.2)]"
+              className="hidden sm:flex items-center px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-900/20 shadow-sm"
             >
-              <div className="relative flex h-3 w-3 mr-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500 shadow-[0_0_8px_rgba(0,245,255,1)]"></span>
+              <div className="relative flex h-3 w-3 mr-3 mt-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
               </div>
-              <span className="text-sm font-bold text-cyan-400 uppercase tracking-wider">AI Active</span>
+              <span className="text-sm font-semibold text-blue-400">AI Active</span>
             </motion.div>
 
             <motion.button

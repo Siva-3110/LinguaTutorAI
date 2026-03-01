@@ -75,11 +75,11 @@ const Quiz = () => {
                 animate={{ opacity: 1, x: 0 }}
                 className="mb-8 border-b border-cyan-900/40 pb-4"
             >
-                <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 uppercase tracking-widest drop-shadow-[0_0_10px_rgba(0,245,255,0.4)] flex items-center">
-                    <BrainCircuit className="mr-4 w-10 h-10 text-cyan-500" />
-                    System Evaluation
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-100 flex items-center">
+                    <BrainCircuit className="mr-4 w-10 h-10 text-cyan-400" />
+                    Create Your Quiz
                 </h1>
-                <p className="text-slate-400 font-mono mt-2 uppercase tracking-widest text-sm">Target vector required for override</p>
+                <p className="text-slate-400 mt-2 text-base">Choose a topic and difficulty to generate questions</p>
             </motion.div>
 
             <AnimatePresence mode="wait">
@@ -96,26 +96,26 @@ const Quiz = () => {
                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-600"></div>
                         <div className="flex flex-col gap-6 relative z-10">
                             <motion.div variants={itemVariants}>
-                                <label className="block text-xs font-bold mb-2 text-cyan-400 uppercase tracking-widest font-mono">Target Vector (Topic)</label>
+                                <label className="block text-sm font-semibold mb-2 text-slate-300">Enter Topic</label>
                                 <input
                                     type="text"
-                                    placeholder="e.g. Memory Allocation..."
+                                    placeholder="e.g. Data Structures"
                                     className="w-full border-b-2 border-slate-700 p-3 bg-slate-900/50 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition-colors shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] text-lg"
                                     value={topic}
                                     onChange={(e) => setTopic(e.target.value)}
                                 />
                             </motion.div>
                             <motion.div variants={itemVariants}>
-                                <label className="block text-xs font-bold mb-2 text-purple-400 uppercase tracking-widest font-mono">Difficulty Override</label>
+                                <label className="block text-sm font-semibold mb-2 text-slate-300">Select Difficulty</label>
                                 <div className="grid grid-cols-3 gap-4">
                                     {['easy', 'medium', 'hard'].map((lvl) => (
                                         <button
                                             key={lvl}
                                             onClick={() => setDifficulty(lvl)}
-                                            className={`py-3 rounded-lg border font-bold uppercase tracking-widest text-sm transition-all duration-300
+                                            className={`py-3 rounded-xl border font-semibold capitalize text-sm transition-all duration-300
                                                 ${difficulty === lvl
-                                                    ? 'bg-purple-600/20 border-purple-400 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                                                    : 'border-slate-700 text-slate-500 hover:border-slate-500'}
+                                                    ? 'bg-blue-600/20 border-blue-400 text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.2)]'
+                                                    : 'bg-slate-900/40 border-slate-700 text-slate-400 hover:border-slate-500'}
                                             `}
                                         >
                                             {lvl}
@@ -130,12 +130,12 @@ const Quiz = () => {
                                 whileTap={{ scale: 0.98 }}
                                 onClick={generateQuiz}
                                 disabled={loading}
-                                className="mt-6 w-full py-4 rounded-xl text-white font-bold tracking-widest uppercase bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(0,245,255,0.4)] border border-cyan-400/50 flex justify-center items-center"
+                                className="mt-6 w-full py-4 rounded-xl text-white font-bold text-lg bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] hover:shadow-[0_6px_20px_rgba(59,130,246,0.23)] transition duration-200 flex justify-center items-center"
                             >
                                 {loading ? (
-                                    <><Loader2 className="w-6 h-6 animate-spin mr-3" /> Initializing Matrix...</>
+                                    <><Loader2 className="w-6 h-6 animate-spin mr-3" /> Generating Quiz...</>
                                 ) : (
-                                    <><Target className="w-6 h-6 mr-3 drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" /> Generate Sequence</>
+                                    <><Sparkles className="w-6 h-6 mr-3 text-blue-200" /> Generate Quiz</>
                                 )}
                             </motion.button>
                         </div>
@@ -153,9 +153,9 @@ const Quiz = () => {
                         className="space-y-8"
                     >
                         {/* Neon Progress Bar */}
-                        <div className="glass-panel p-4 rounded-xl flex items-center justify-between shadow-[0_0_15px_rgba(0,245,255,0.1)]">
-                            <div className="text-cyan-400 font-mono font-bold uppercase tracking-widest text-xs">
-                                Evaluation Progress
+                        <div className="glass-panel p-4 rounded-xl flex items-center justify-between">
+                            <div className="text-slate-300 font-semibold text-sm">
+                                Quiz Progress
                             </div>
                             <div className="flex-1 mx-4 bg-slate-800 h-2 rounded-full overflow-hidden relative">
                                 <motion.div
@@ -172,10 +172,10 @@ const Quiz = () => {
                             <motion.div
                                 variants={itemVariants}
                                 key={idx}
-                                className="glass-panel-heavy p-6 md:p-8 rounded-2xl relative overflow-hidden border border-slate-700/50 hover:border-cyan-500/30 transition-colors"
+                                className="glass-panel p-6 md:p-8 rounded-2xl relative overflow-hidden border border-slate-700 hover:border-slate-500 transition-colors"
                             >
-                                <div className="absolute top-0 left-0 bg-cyan-900/40 text-cyan-400 rounded-br-xl px-4 py-1 font-mono font-bold border-b border-r border-cyan-800/50">
-                                    SEQ_{idx + 1}
+                                <div className="absolute top-0 left-0 bg-blue-600/20 text-blue-400 rounded-br-xl px-4 py-1 font-semibold border-b border-r border-blue-500/30 text-sm">
+                                    Question {idx + 1}
                                 </div>
 
                                 <h3 className="text-lg md:text-xl font-medium text-slate-200 mt-4 mb-6 leading-relaxed">
@@ -237,17 +237,17 @@ const Quiz = () => {
                             whileTap={{ scale: 0.98 }}
                             onClick={submitQuiz}
                             disabled={loading || answeredCount < quiz.length}
-                            className={`w-full py-5 rounded-xl text-white font-bold tracking-widest uppercase transition-all duration-300 flex justify-center items-center shadow-lg border
+                            className={`w-full py-4 rounded-xl text-white font-bold text-lg transition-all duration-300 flex justify-center items-center shadow-md
                                 ${loading || answeredCount < quiz.length
                                     ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-green-600 to-emerald-500 border-emerald-400/50 shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:from-green-500 hover:to-emerald-400 drop-shadow-[0_0_5px_rgba(16,185,129,0.5)]'
+                                    : 'bg-blue-600 hover:bg-blue-500 shadow-[0_4px_14px_0_rgba(59,130,246,0.39)] hover:shadow-[0_6px_20px_rgba(59,130,246,0.23)]'
                                 }
                             `}
                         >
                             {loading ? (
-                                <><Loader2 className="w-6 h-6 animate-spin mr-3" /> Processing Data...</>
+                                <><Loader2 className="w-6 h-6 animate-spin mr-3" /> Evaluating Answers...</>
                             ) : (
-                                <><CheckCircle2 className="w-6 h-6 mr-3" /> Execute Validation</>
+                                <><CheckCircle2 className="w-6 h-6 mr-3" /> Submit Answers</>
                             )}
                         </motion.button>
                     </motion.div>
@@ -260,13 +260,13 @@ const Quiz = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5, type: 'spring' }}
-                        className="glass-panel-heavy rounded-2xl p-8 md:p-12 text-center relative overflow-hidden flex flex-col items-center justify-center border border-cyan-500/30 shadow-[0_0_50px_rgba(0,245,255,0.15)]"
+                        className="glass-panel rounded-2xl p-8 md:p-12 text-center relative overflow-hidden flex flex-col items-center justify-center border border-slate-700 shadow-xl"
                     >
-                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-cyan-500 to-purple-500"></div>
-                        <Sparkles className="w-16 h-16 text-yellow-400 mb-6 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)] animate-pulse" />
+                        <div className="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
+                        <Sparkles className="w-16 h-16 text-blue-400 mb-6" />
 
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-200 uppercase tracking-widest mb-2">Metrics Acquired</h2>
-                        <p className="text-slate-400 font-mono mb-8 opacity-80">Validation Sequence Complete</p>
+                        <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-2">Quiz Completed!</h2>
+                        <p className="text-slate-400 mb-8">Here are your results</p>
 
                         <div className="relative mb-10 w-48 h-48 flex items-center justify-center">
                             <svg className="w-full h-full transform -rotate-90 pointer-events-none drop-shadow-[0_0_15px_rgba(0,245,255,0.5)]">
@@ -312,9 +312,9 @@ const Quiz = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => { setQuiz(null); setResult(null); setTopic(''); }}
-                            className="mt-10 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold tracking-widest uppercase rounded-xl transition-colors border border-slate-600 shadow-[0_0_10px_rgba(0,0,0,0.5)]"
+                            className="mt-10 px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-full transition-colors border border-slate-700"
                         >
-                            Reset Interface
+                            Start New Quiz
                         </motion.button>
                     </motion.div>
                 )}

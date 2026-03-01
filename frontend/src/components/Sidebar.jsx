@@ -14,14 +14,14 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="w-20 md:w-64 h-full glass-panel-heavy border-r border-slate-800 flex flex-col justify-between hidden sm:flex shrink-0 z-20">
+        <div className="w-20 md:w-64 h-full glass-panel border-r border-slate-800 flex flex-col justify-between hidden sm:flex shrink-0 z-20">
             <div className="py-6 px-4 md:px-6">
                 <div className="flex flex-col items-center md:items-start mb-10">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 shadow-[0_0_15px_rgba(139,92,246,0.6)] flex items-center justify-center mb-3">
-                        <span className="text-xl font-bold text-white tracking-widest">LT</span>
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-600 shadow-md flex items-center justify-center mb-3">
+                        <span className="text-xl font-bold text-white tracking-wide">LT</span>
                     </div>
-                    <h1 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 text-lg font-black tracking-widest uppercase hidden md:block drop-shadow-[0_0_8px_rgba(0,245,255,0.4)]">
-                        LinguaTutor <span className="text-pink-500">AI</span>
+                    <h1 className="text-slate-100 text-xl md:text-2xl font-bold hidden md:block">
+                        LinguaTutor <span className="text-blue-500 font-black">AI</span>
                     </h1>
                 </div>
 

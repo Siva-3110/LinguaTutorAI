@@ -63,12 +63,12 @@ const Dashboard = () => {
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2, type: 'spring' }}
-                            className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-400 drop-shadow-[0_0_10px_rgba(0,245,255,0.4)] tracking-wide uppercase"
+                            className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-400 drop-shadow-sm"
                         >
-                            Welcome back, Siva <Zap className="inline w-10 h-10 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)] -mt-2" />
+                            Welcome back, Siva <Zap className="inline w-10 h-10 text-yellow-400 drop-shadow-sm -mt-2" />
                         </motion.h1>
                         <p className="text-slate-300 text-lg font-medium max-w-xl">
-                            Neural pathways optimized. Your training schedule is ready for execution.
+                            Ready to learn? Your personalized study plan is waiting.
                         </p>
                     </div>
 
@@ -107,15 +107,15 @@ const Dashboard = () => {
                 {/* Recommended Topics */}
                 <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
                     <div className="flex justify-between items-end border-b border-slate-800 pb-2">
-                        <h2 className="text-2xl font-bold text-white tracking-wider flex items-center gap-3">
-                            <Target className="text-pink-500 w-6 h-6" /> Recommended Vectors
+                        <h2 className="text-2xl font-bold text-slate-100 flex items-center gap-3">
+                            <Target className="text-pink-500 w-6 h-6" /> Recommended Topics
                         </h2>
-                        <span className={`px-3 py-1 rounded-sm text-xs border uppercase tracking-widest font-bold font-mono
-                            ${difficulty === 'easy' ? 'bg-cyan-900/30 text-cyan-400 border-cyan-500/50' :
-                                difficulty === 'medium' ? 'bg-purple-900/30 text-purple-400 border-purple-500/50' :
-                                    'bg-pink-900/30 text-pink-400 border-pink-500/50'
+                        <span className={`px-3 py-1 rounded-md text-sm font-semibold capitalize
+                            ${difficulty === 'easy' ? 'bg-cyan-900/30 text-cyan-400 border border-cyan-500/50' :
+                                difficulty === 'medium' ? 'bg-purple-900/30 text-purple-400 border border-purple-500/50' :
+                                    'bg-pink-900/30 text-pink-400 border border-pink-500/50'
                             }`}>
-                            Lvl: {difficulty}
+                            {difficulty} Level
                         </span>
                     </div>
 
@@ -140,7 +140,7 @@ const Dashboard = () => {
                 {/* Quick Actions */}
                 <motion.div variants={itemVariants} className="space-y-6">
                     <div className="border-b border-slate-800 pb-2">
-                        <h2 className="text-2xl font-bold text-white tracking-wider">Execute</h2>
+                        <h2 className="text-2xl font-bold text-slate-100">Quick Actions</h2>
                     </div>
 
                     <div className="flex flex-col gap-4">
@@ -154,9 +154,9 @@ const Dashboard = () => {
                                 <div className="p-3 bg-purple-500/20 rounded-lg text-purple-400 group-hover:bg-purple-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(168,85,247,0.8)] transition-all">
                                     <Zap className="w-6 h-6" />
                                 </div>
-                                <div className="text-left relative z-10">
-                                    <h4 className="font-bold text-lg text-white">Initialize AI Tutor</h4>
-                                    <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">Neural Chat Sync</p>
+                                <div className="text-left relative z-10 flex flex-col justify-center">
+                                    <h4 className="font-bold text-lg text-slate-100">Chat with AI Tutor</h4>
+                                    <p className="text-sm text-slate-400">Instant language help</p>
                                 </div>
                             </motion.button>
                         </Link>
@@ -171,9 +171,9 @@ const Dashboard = () => {
                                 <div className="p-3 bg-cyan-500/20 rounded-lg text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(0,245,255,0.8)] transition-all">
                                     <BrainCircuit className="w-6 h-6" />
                                 </div>
-                                <div className="text-left relative z-10">
-                                    <h4 className="font-bold text-lg text-white">System Override Quiz</h4>
-                                    <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">Evaluate Metrics</p>
+                                <div className="text-left relative z-10 flex flex-col justify-center">
+                                    <h4 className="font-bold text-lg text-slate-100">Take a Quiz</h4>
+                                    <p className="text-sm text-slate-400">Test your knowledge</p>
                                 </div>
                             </motion.button>
                         </Link>
@@ -188,9 +188,9 @@ const Dashboard = () => {
                                 <div className="p-3 bg-pink-500/20 rounded-lg text-pink-400 group-hover:bg-pink-500 group-hover:text-white group-hover:shadow-[0_0_15px_rgba(255,0,255,0.8)] transition-all">
                                     <Users className="w-6 h-6" />
                                 </div>
-                                <div className="text-left relative z-10">
-                                    <h4 className="font-bold text-lg text-white">Connect Grid Room</h4>
-                                    <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">Co-Op Instance</p>
+                                <div className="text-left relative z-10 flex flex-col justify-center">
+                                    <h4 className="font-bold text-lg text-slate-100">Join Study Room</h4>
+                                    <p className="text-sm text-slate-400">Practice with others</p>
                                 </div>
                             </motion.button>
                         </Link>

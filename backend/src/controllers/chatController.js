@@ -29,7 +29,11 @@ export const handleChat = async (req, res) => {
             reply: aiResponse
         });
     } catch (error) {
-        console.warn('Primary AI Error, falling back to Edge AI:', error.message);
+        console.error('------- PRIMARY AI FAILURE DETECTED -------');
+        console.error('Error Type:', error.name);
+        console.error('Error Message:', error.message);
+        if (error.stack) console.error('Stack Trace:', error.stack.split('\n').slice(0, 3).join('\n'));
+        console.error('------------------------------------------');
 
         // Edge AI Fallback
         const edgeResponse = generateFallbackResponse(req.body.message);
