@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5001/api';
 
 export const sendMessageToAPI = async (message, language, subject, history) => {
     const response = await fetch(`${API_BASE_URL}/chat`, {

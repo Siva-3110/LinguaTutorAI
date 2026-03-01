@@ -10,7 +10,7 @@ const Admin = () => {
     useEffect(() => {
         const fetchAdminData = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/admin/dashboard');
+                const res = await axios.get('http://localhost:5001/api/admin/dashboard');
                 setData(res.data.data);
             } catch (err) {
                 console.warn('Could not connect to Admin DB, loading mock data');

@@ -17,7 +17,7 @@ const Quiz = () => {
         if (!topic) return alert('Please input a target vector (topic)');
         setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5000/api/quizzes/generate', {
+            const res = await axios.post('http://localhost:5001/api/quizzes/generate', {
                 topic,
                 difficulty,
                 numQuestions: 3
@@ -41,7 +41,7 @@ const Quiz = () => {
                 answerText: answers[qText]
             }));
 
-            const res = await axios.post('http://localhost:5000/api/quizzes/submit', {
+            const res = await axios.post('http://localhost:5001/api/quizzes/submit', {
                 userId: mockUserId,
                 questions: quiz,
                 userAnswers

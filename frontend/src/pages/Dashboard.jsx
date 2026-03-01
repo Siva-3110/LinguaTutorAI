@@ -14,7 +14,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/recommendations/${mockUserId}`);
+                const res = await axios.get(`http://localhost:5001/api/recommendations/${mockUserId}`);
                 setRecommendations(res.data.data.recommendedTopics);
                 setDifficulty(res.data.data.currentDifficulty);
             } catch (err) {

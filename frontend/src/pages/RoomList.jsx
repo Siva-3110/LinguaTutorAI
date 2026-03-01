@@ -17,7 +17,7 @@ const RoomList = () => {
     const fetchRooms = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:5000/api/collab');
+            const res = await axios.get('http://localhost:5001/api/collab');
             setRooms(res.data.rooms);
         } catch (err) {
             console.warn('Could not load active networks.', err);
@@ -31,7 +31,7 @@ const RoomList = () => {
         if (!newRoomName.trim()) return;
 
         try {
-            const res = await axios.post('http://localhost:5000/api/collab/create', {
+            const res = await axios.post('http://localhost:5001/api/collab/create', {
                 roomName: newRoomName,
                 creatorId: 'mock_userId_123'
             });
