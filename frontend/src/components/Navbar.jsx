@@ -8,6 +8,9 @@ const Navbar = () => {
   const location = useLocation();
   const isOnline = useNetworkStatus();
 
+  // Hide Navbar completely on Home page
+  if (location.pathname === '/') return null;
+
   // Route title formatting
   const getPageTitle = (path) => {
     if (path === '/') return 'Command Center';
@@ -35,18 +38,6 @@ const Navbar = () => {
             </h2>
           </div>
 
-          <div className="flex flex-1 justify-center max-w-lg mx-4 hidden md:flex">
-            <div className="relative w-full max-w-md group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-slate-500 group-focus-within:text-blue-500 transition-colors" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="block w-full pl-10 pr-3 py-2 border border-slate-700 rounded-lg leading-5 bg-slate-900/50 text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:bg-slate-900 transition-all shadow-inner sm:text-sm"
-              />
-            </div>
-          </div>
 
           <div className="flex items-center space-x-4">
             {/* AI Status Badge */}

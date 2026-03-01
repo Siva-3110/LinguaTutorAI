@@ -47,14 +47,14 @@ const MessageBubble = ({ message }) => {
                     <div className="space-y-5">
                         {message.structured.explanation && (
                             <div>
-                                <h3 className="font-bold text-cyan-400 mb-1 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(0,245,255,0.6)]">System Explanation</h3>
+                                <h3 className="font-bold text-cyan-400 mb-1 text-sm drop-shadow-[0_0_5px_rgba(0,245,255,0.6)]">Explanation</h3>
                                 <p className="text-slate-200 leading-relaxed">{message.structured.explanation}</p>
                             </div>
                         )}
 
                         {message.structured.steps && Array.isArray(message.structured.steps) && message.structured.steps.length > 0 && (
                             <div>
-                                <h3 className="font-bold text-purple-400 mb-2 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(168,85,247,0.6)]">Execution Sequence</h3>
+                                <h3 className="font-bold text-purple-400 mb-2 text-sm drop-shadow-[0_0_5px_rgba(168,85,247,0.6)]">Steps</h3>
                                 <ul className="list-decimal pl-5 space-y-2 text-slate-300">
                                     {message.structured.steps.map((step, idx) => (
                                         <li key={idx} className="leading-relaxed marker:text-purple-500 marker:font-bold">{step}</li>
@@ -65,7 +65,7 @@ const MessageBubble = ({ message }) => {
 
                         {message.structured.examples && Array.isArray(message.structured.examples) && message.structured.examples.length > 0 && (
                             <div>
-                                <h3 className="font-bold text-pink-400 mb-2 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(255,0,255,0.6)]">Data Examples</h3>
+                                <h3 className="font-bold text-pink-400 mb-2 text-sm drop-shadow-[0_0_5px_rgba(255,0,255,0.6)]">Examples</h3>
                                 <div className="bg-slate-900/60 p-4 rounded-xl border border-pink-500/30 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
                                     <ul className="list-disc pl-5 space-y-2 text-slate-300 font-mono text-sm">
                                         {message.structured.examples.map((ex, idx) => (
@@ -78,7 +78,7 @@ const MessageBubble = ({ message }) => {
 
                         {message.structured.summary && (
                             <div>
-                                <h3 className="font-bold text-yellow-400 mb-1 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(250,204,21,0.6)]">Metric Summary</h3>
+                                <h3 className="font-bold text-yellow-400 mb-1 text-sm drop-shadow-[0_0_5px_rgba(250,204,21,0.6)]">Summary</h3>
                                 <p className="text-yellow-100 italic font-medium">{message.structured.summary}</p>
                             </div>
                         )}

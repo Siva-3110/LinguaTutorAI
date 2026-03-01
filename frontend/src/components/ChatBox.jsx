@@ -37,26 +37,26 @@ const ChatBox = () => {
             <div className="px-4 md:px-6 py-4 glass-panel border-b border-cyan-900/40 flex justify-between items-center z-10 shrink-0">
                 <div className="flex items-center text-slate-300 font-medium">
                     <Globe size={20} className="mr-3 text-cyan-500 drop-shadow-[0_0_8px_rgba(0,245,255,0.8)]" />
-                    <span className="hidden sm:inline tracking-wider uppercase text-sm mr-3 font-semibold text-slate-400">Localization:</span>
+                    <span className="hidden sm:inline text-sm mr-3 font-semibold text-slate-300">Language:</span>
                     <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        className="bg-slate-900/50 border border-cyan-800 text-cyan-400 text-sm font-bold uppercase tracking-wide rounded-md focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 block p-2 outline-none transition-colors cursor-pointer shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"
+                        className="bg-slate-900/50 border border-cyan-800 text-cyan-400 text-sm font-medium rounded-md focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 block p-2 outline-none transition-colors cursor-pointer shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"
                     >
-                        <option value="en">English (STD)</option>
+                        <option value="en">English</option>
                         <option value="ta">Tamil (தமிழ்)</option>
                         <option value="hi">Hindi (हिंदी)</option>
                     </select>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="hidden md:flex text-xs font-bold text-purple-400 bg-purple-900/20 px-4 py-2 rounded-md border border-purple-500/30 items-center shadow-[inset_0_0_10px_rgba(168,85,247,0.2)] uppercase tracking-widest">
-                        <TerminalSquare size={14} className="mr-2 text-purple-500" />
-                        Neural Link Estab
+                    <div className="hidden md:flex text-sm font-medium text-purple-400 bg-purple-900/20 px-4 py-2 rounded-md border border-purple-500/30 items-center shadow-[inset_0_0_10px_rgba(168,85,247,0.2)]">
+                        <TerminalSquare size={16} className="mr-2 text-purple-500" />
+                        Ready
                     </div>
-                    <div className="text-xs font-bold text-cyan-400 bg-cyan-900/20 px-4 py-2 rounded-md border border-cyan-500/30 flex items-center shadow-[inset_0_0_10px_rgba(0,245,255,0.2)] uppercase tracking-widest animate-pulse">
-                        <Cpu size={14} className="mr-2 text-cyan-500" />
-                        Primary Core
+                    <div className="text-sm font-medium text-cyan-400 bg-cyan-900/20 px-4 py-2 rounded-md border border-cyan-500/30 flex items-center shadow-[inset_0_0_10px_rgba(0,245,255,0.2)] animate-pulse">
+                        <Cpu size={16} className="mr-2 text-cyan-500" />
+                        Online
                     </div>
                 </div>
             </div>
@@ -76,7 +76,7 @@ const ChatBox = () => {
                         className="flex justify-start"
                     >
                         <div className="glass-panel-heavy text-cyan-400 px-6 py-4 rounded-2xl rounded-bl-none border border-cyan-500/40 flex items-center space-x-3 shadow-[0_0_15px_rgba(0,245,255,0.2)]">
-                            <span className="text-xs uppercase tracking-widest font-bold font-mono">Processing</span>
+                            <span className="text-sm font-medium">Typing...</span>
                             <div className="flex space-x-1.5">
                                 <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(0,245,255,1)]"></div>
                                 <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,1)]" style={{ animationDelay: '0.2s' }}></div>
@@ -98,9 +98,9 @@ const ChatBox = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder="Initialize command sequence..."
+                            placeholder="Type a message..."
                             disabled={isTyping}
-                            className="relative w-full px-6 py-4 bg-slate-950/80 border border-slate-700/50 rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-600 font-mono text-sm transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50"
+                            className="relative w-full px-6 py-4 bg-slate-950/80 border border-slate-700/50 rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-500 text-base transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50"
                         />
                     </div>
                     <motion.button
@@ -108,9 +108,9 @@ const ChatBox = () => {
                         whileTap={{ scale: 0.95 }}
                         type="submit"
                         disabled={!input.trim() || isTyping}
-                        className="relative inline-flex items-center justify-center px-6 md:px-8 py-4 rounded-xl text-white font-bold tracking-widest uppercase bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(255,0,255,0.4)] border border-pink-400/50"
+                        className="relative inline-flex items-center justify-center px-6 md:px-8 py-4 rounded-xl text-white font-semibold flex-shrink-0 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(255,0,255,0.4)] border border-pink-400/50"
                     >
-                        <span className="hidden sm:inline mr-2">Execute</span>
+                        <span className="hidden sm:inline mr-2">Send</span>
                         <Send size={20} className="drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
                     </motion.button>
                 </form>

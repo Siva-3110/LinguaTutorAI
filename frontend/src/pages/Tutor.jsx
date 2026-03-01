@@ -11,12 +11,12 @@ const Tutor = () => {
 
         <div className="flex items-center mb-6 border-b border-cyan-800/50 pb-4 relative z-10">
           <History className="w-5 h-5 text-cyan-400 mr-2" />
-          <h2 className="text-sm font-bold text-cyan-400 uppercase tracking-widest font-mono">Archive Logs</h2>
+          <h2 className="text-sm font-bold text-cyan-400">Chat History</h2>
         </div>
 
         <div className="flex flex-col items-center justify-center h-48 opacity-50 relative z-10 border border-slate-700/50 border-dashed rounded-xl bg-slate-900/30">
           <Target className="w-8 h-8 text-slate-500 mb-2" />
-          <div className="text-xs text-slate-400 font-mono uppercase tracking-widest text-center">No Data<br />Recorded</div>
+          <div className="text-sm text-slate-400 text-center font-medium">No history<br />found</div>
         </div>
       </div>
 
