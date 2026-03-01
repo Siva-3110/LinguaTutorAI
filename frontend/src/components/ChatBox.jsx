@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import useChat from '../hooks/useChat';
 import MessageBubble from './MessageBubble';
-import { Send, Globe } from 'lucide-react';
+import { Send, Globe, Cpu, TerminalSquare } from 'lucide-react';
 
 const ChatBox = () => {
     const { messages, isTyping, sendMessage, language, setLanguage } = useChat();
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
 
-    // Auto scroll to latest message
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -20,7 +20,6 @@ const ChatBox = () => {
     const handleSend = (e) => {
         e.preventDefault();
         if (!input.trim() || isTyping) return;
-
         sendMessage(input);
         setInput('');
     };
@@ -33,69 +32,93 @@ const ChatBox = () => {
     };
 
     return (
-        <div className="flex flex-col flex-grow w-full h-full relative bg-gray-50">
+        <div className="flex flex-col flex-grow w-full h-full relative bg-transparent overflow-hidden">
             {/* Header / Tools */}
-            <div className="px-4 py-3 bg-white border-b border-gray-200 flex justify-between items-center shadow-sm z-10 shrink-0">
-                <div className="flex items-center text-gray-700 font-medium">
-                    <Globe size={18} className="mr-2 text-blue-600" />
-                    <span className="hidden sm:inline">Language:</span>
+            <div className="px-4 md:px-6 py-4 glass-panel border-b border-cyan-900/40 flex justify-between items-center z-10 shrink-0">
+                <div className="flex items-center text-slate-300 font-medium">
+                    <Globe size={20} className="mr-3 text-cyan-500 drop-shadow-[0_0_8px_rgba(0,245,255,0.8)]" />
+                    <span className="hidden sm:inline tracking-wider uppercase text-sm mr-3 font-semibold text-slate-400">Localization:</span>
                     <select
                         value={language}
                         onChange={(e) => setLanguage(e.target.value)}
-                        className="ml-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1.5 outline-none transition-colors cursor-pointer"
+                        className="bg-slate-900/50 border border-cyan-800 text-cyan-400 text-sm font-bold uppercase tracking-wide rounded-md focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 block p-2 outline-none transition-colors cursor-pointer shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]"
                     >
-                        <option value="en">English</option>
+                        <option value="en">English (STD)</option>
                         <option value="ta">Tamil (தமிழ்)</option>
                         <option value="hi">Hindi (हिंदी)</option>
                     </select>
                 </div>
-                <div className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100 flex items-center shadow-sm">
-                    <span className="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span>
-                    AI Tutor Active
+
+                <div className="flex items-center gap-4">
+                    <div className="hidden md:flex text-xs font-bold text-purple-400 bg-purple-900/20 px-4 py-2 rounded-md border border-purple-500/30 items-center shadow-[inset_0_0_10px_rgba(168,85,247,0.2)] uppercase tracking-widest">
+                        <TerminalSquare size={14} className="mr-2 text-purple-500" />
+                        Neural Link Estab
+                    </div>
+                    <div className="text-xs font-bold text-cyan-400 bg-cyan-900/20 px-4 py-2 rounded-md border border-cyan-500/30 flex items-center shadow-[inset_0_0_10px_rgba(0,245,255,0.2)] uppercase tracking-widest animate-pulse">
+                        <Cpu size={14} className="mr-2 text-cyan-500" />
+                        Primary Core
+                    </div>
                 </div>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-grow p-4 overflow-y-auto space-y-6">
-                {messages.map((msg, index) => (
-                    <MessageBubble key={index} message={msg} />
-                ))}
+            <div className="flex-grow p-4 md:p-6 overflow-y-auto space-y-6 scrollbar-hide">
+                <AnimatePresence>
+                    {messages.map((msg, index) => (
+                        <MessageBubble key={index} message={msg} />
+                    ))}
+                </AnimatePresence>
 
                 {isTyping && (
-                    <div className="flex justify-start">
-                        <div className="bg-white text-gray-800 px-5 py-4 rounded-2xl rounded-bl-none shadow-sm border border-gray-100 flex items-center space-x-2">
-                            <span className="text-sm text-gray-500 font-medium mr-1">AI is thinking</span>
-                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
-                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex justify-start"
+                    >
+                        <div className="glass-panel-heavy text-cyan-400 px-6 py-4 rounded-2xl rounded-bl-none border border-cyan-500/40 flex items-center space-x-3 shadow-[0_0_15px_rgba(0,245,255,0.2)]">
+                            <span className="text-xs uppercase tracking-widest font-bold font-mono">Processing</span>
+                            <div className="flex space-x-1.5">
+                                <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(0,245,255,1)]"></div>
+                                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,1)]" style={{ animationDelay: '0.2s' }}></div>
+                                <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(255,0,255,1)]" style={{ animationDelay: '0.4s' }}></div>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
                 )}
-                <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} className="h-4" />
             </div>
 
             {/* Input Box */}
-            <div className="p-4 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] shrink-0">
-                <form onSubmit={handleSend} className="max-w-4xl mx-auto flex space-x-3">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        placeholder="Ask your tutor anything..."
-                        disabled={isTyping}
-                        className="flex-grow px-5 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 bg-gray-50 hover:bg-white text-gray-800"
-                    />
-                    <button
+            <div className="p-4 md:p-6 glass-panel border-t border-cyan-900/40 shrink-0 relative z-20">
+                <form onSubmit={handleSend} className="max-w-5xl mx-auto flex space-x-3">
+                    <div className="relative flex-grow group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-500 group-focus-within:opacity-100"></div>
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Initialize command sequence..."
+                            disabled={isTyping}
+                            className="relative w-full px-6 py-4 bg-slate-950/80 border border-slate-700/50 rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-600 font-mono text-sm transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50"
+                        />
+                    </div>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         type="submit"
                         disabled={!input.trim() || isTyping}
-                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 active:scale-95 shadow-md"
+                        className="relative inline-flex items-center justify-center px-6 md:px-8 py-4 rounded-xl text-white font-bold tracking-widest uppercase bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(255,0,255,0.4)] border border-pink-400/50"
                     >
-                        <span className="hidden sm:inline mr-2">Send</span>
-                        <Send size={18} />
-                    </button>
+                        <span className="hidden sm:inline mr-2">Execute</span>
+                        <Send size={20} className="drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />
+                    </motion.button>
                 </form>
             </div>
+
+            {/* Background elements */}
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
         </div>
     );
 };

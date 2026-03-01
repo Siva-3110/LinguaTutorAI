@@ -1,15 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { sendMessageToAPI } from '../services/api';
 
 const useChat = () => {
-    const [messages, setMessages] = useState([
-        {
-            role: 'ai',
-            text: 'Hello! I am LinguaTutor AI. What would you like to learn today?',
-            structured: null,
-            timestamp: new Date().toISOString(),
+    const [messages, setMessages] = useState(() => {
+        const saved = localStorage.getItem('linguatutor_chat_messages');
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch (e) {
+                console.error("Failed to parse chat history");
+            }
         }
-    ]);
+        return [
+            {
+                role: 'ai',
+                text: 'Hello! I am LinguaTutor AI. What would you like to learn today?',
+                structured: null,
+                timestamp: new Date().toISOString(),
+            }
+        ];
+    });
+
+    useEffect(() => {
+        localStorage.setItem('linguatutor_chat_messages', JSON.stringify(messages));
+    }, [messages]);
+
     const [isTyping, setIsTyping] = useState(false);
     const [language, setLanguage] = useState('en');
 
@@ -45,10 +60,11 @@ const useChat = () => {
         try {
             const response = await sendMessageToAPI(text, language, subject, history);
 
+            const isFlatObject = typeof response.reply === 'string';
             const aiMessage = {
                 role: 'ai',
                 text: null,
-                structured: response.reply,
+                structured: isFlatObject ? { explanation: response.reply } : response.reply,
                 timestamp: new Date().toISOString(),
             };
 
