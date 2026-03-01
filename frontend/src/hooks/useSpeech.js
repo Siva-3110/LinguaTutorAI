@@ -72,42 +72,55 @@ const useSpeech = () => {
             synthRef.current.cancel();
         }
 
-        if (!text) return;
+        // Critical Fix: Chromium has a widespread bug where long strings silently fail to play.
+        // We bypass this by chunking the text by punctuation.
+        const chunks = text.match(/[^.!?]+[.!?]+/g) || [text]; // Split by sentences
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        const targetLang = getVoiceLangCode(lang);
-        utterance.lang = targetLang;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
+        console.log(`[useSpeech] Split text into ${chunks.length} chunks to prevent Chrome silent crash.`);
 
-        // Try to find a native voice matching the language exactly
-        const voice = voices.find(v => v.lang === targetLang || v.lang.startsWith(targetLang.split('-')[0]));
-        if (voice) {
-            utterance.voice = voice;
-            console.log("[useSpeech] Matched specific voice:", voice.name, voice.lang);
-        } else {
-            console.log("[useSpeech] No specific voice match found for target lang:", targetLang, "using default.");
-        }
+        let currentChunkIndex = 0;
 
-        utterance.onstart = () => setIsSpeaking(true);
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = (e) => {
-            console.error('[useSpeech] SpeechSynthesis error:', e);
-            setIsSpeaking(false);
+        const speakNextChunk = () => {
+            if (currentChunkIndex >= chunks.length) {
+                setIsSpeaking(false);
+                return;
+            }
+
+            const chunkText = chunks[currentChunkIndex];
+            const utterance = new SpeechSynthesisUtterance(chunkText);
+            utterance.lang = targetLang;
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+
+            if (voice) {
+                utterance.voice = voice;
+            }
+
+            utterance.onstart = () => {
+                if (currentChunkIndex === 0) setIsSpeaking(true);
+            };
+
+            utterance.onend = () => {
+                currentChunkIndex++;
+                speakNextChunk(); // Play the next sentence
+            };
+
+            utterance.onerror = (e) => {
+                console.error(`[useSpeech] SpeechSynthesis error on chunk ${currentChunkIndex}:`, e);
+                setIsSpeaking(false);
+            };
+
+            // Keep reference to prevent GC
+            utteranceRef.current = utterance;
+            window._globalUtterance = utterance;
+
+            synthRef.current.speak(utterance);
         };
 
-        // Keep reference so Chrome doesn't aggressively garbage collect the audio
-        utteranceRef.current = utterance;
-        window._globalUtterance = utterance; // Ultimate garbage collection fail-safe
+        // Start the recursive playback chain
+        console.log("[useSpeech] Triggering chunked speech synthesis start.");
+        speakNextChunk();
 
-        console.log("[useSpeech] Triggering speech synthesis now.");
-
-        // Critical Fix: Wrapping .speak in a timeout prevents the "interrupted" bug in modern browsers
-        // It also gives .cancel() enough time to clear the engine state
-        setTimeout(() => {
-            console.log("[useSpeech] Calling synth.speak()...");
-            synthRef.current.speak(utterance);
-        }, 100);
     }, [voices]);
 
     const stop = useCallback(() => {
