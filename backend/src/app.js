@@ -10,6 +10,7 @@ import recommendationRoutes from './routes/recommendationRoutes.js';
 import quizRoutes from './routes/quizRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import collabRoutes from './routes/collabRoutes.js';
+import voiceRoutes from './routes/voiceRoutes.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/collab', collabRoutes);
+app.use('/api/voice', voiceRoutes);
 
 // Base route
 app.get('/', (req, res) => {

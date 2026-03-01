@@ -1,13 +1,92 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useChat from '../hooks/useChat';
+import useVoiceRecorder from '../hooks/useVoiceRecorder';
+import useSpeech from '../hooks/useSpeech';
 import MessageBubble from './MessageBubble';
-import { Send, Globe, Cpu, TerminalSquare } from 'lucide-react';
+import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX } from 'lucide-react';
 
 const ChatBox = () => {
     const { messages, isTyping, sendMessage, language, setLanguage } = useChat();
     const [input, setInput] = useState('');
+    const [isTranscribing, setIsTranscribing] = useState(false);
+    const [autoPlay, setAutoPlay] = useState(true);
     const messagesEndRef = useRef(null);
+    const { speak, stop } = useSpeech();
+
+    // Auto-play AI messages
+    useEffect(() => {
+        if (!autoPlay || messages.length === 0) return;
+
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg.role === 'ai' && !isTyping) { // Only speak when typing is finished
+            let textToSpeak = lastMsg.text || '';
+            if (lastMsg.structured) {
+                textToSpeak = [
+                    lastMsg.structured.explanation,
+                    lastMsg.structured.steps?.join('. '),
+                    lastMsg.structured.summary
+                ].filter(Boolean).join('. ');
+            }
+            if (textToSpeak) {
+                speak(textToSpeak, language);
+            }
+        }
+    }, [messages, isTyping, autoPlay, language, speak]);
+
+    // AI Voice Transcription Logic
+    const handleAudioReady = async (audioBlob) => {
+        setIsTranscribing(true);
+        try {
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.webm');
+
+            const response = await fetch('http://localhost:5000/api/voice/transcribe', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.text) {
+                setInput(data.text);
+            } else {
+                console.warn("Backend transcription failed, attempting browser fallback");
+                fallbackToBrowserSpeech();
+            }
+        } catch (error) {
+            console.error("Transcription error:", error);
+            fallbackToBrowserSpeech();
+        } finally {
+            setIsTranscribing(false);
+        }
+    };
+
+    const fallbackToBrowserSpeech = () => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Speech recognition is not supported in this browser.");
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = language === 'ta' ? 'ta-IN' : language === 'hi' ? 'hi-IN' : 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setInput(transcript);
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Browser speech recognition error:", event.error);
+        };
+
+        recognition.start();
+    };
+
+    const { isRecording, startRecording, stopRecording, error: recordError } = useVoiceRecorder(handleAudioReady);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -50,6 +129,22 @@ const ChatBox = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => {
+                            setAutoPlay(!autoPlay);
+                            if (autoPlay) stop(); // Stop immediately if turning off
+                        }}
+                        className={`hidden md:flex items-center px-4 py-2 rounded-md border text-sm font-medium transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]
+                            ${autoPlay
+                                ? 'bg-cyan-900/40 text-cyan-400 border-cyan-500/50 drop-shadow-[0_0_5px_rgba(0,245,255,0.4)]'
+                                : 'bg-slate-900/60 text-slate-500 border-slate-700/50 hover:text-slate-300'
+                            }`}
+                        title={autoPlay ? "Auto-Play Enabled" : "Auto-Play Disabled"}
+                    >
+                        {autoPlay ? <Volume2 size={16} className="mr-2" /> : <VolumeX size={16} className="mr-2" />}
+                        {autoPlay ? "Auto-Play On" : "Auto-Play Off"}
+                    </button>
+
                     <div className="hidden md:flex text-sm font-medium text-purple-400 bg-purple-900/20 px-4 py-2 rounded-md border border-purple-500/30 items-center shadow-[inset_0_0_10px_rgba(168,85,247,0.2)]">
                         <TerminalSquare size={16} className="mr-2 text-purple-500" />
                         Ready
@@ -65,7 +160,7 @@ const ChatBox = () => {
             <div className="flex-grow p-4 md:p-6 overflow-y-auto space-y-6 scrollbar-hide">
                 <AnimatePresence>
                     {messages.map((msg, index) => (
-                        <MessageBubble key={index} message={msg} />
+                        <MessageBubble key={index} message={msg} language={language} speak={speak} stop={stop} />
                     ))}
                 </AnimatePresence>
 
@@ -98,11 +193,34 @@ const ChatBox = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder="Type a message..."
-                            disabled={isTyping}
-                            className="relative w-full px-6 py-4 bg-slate-950/80 border border-slate-700/50 rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-500 text-base transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50"
+                            placeholder={isRecording ? "Listening..." : isTranscribing ? "Transcribing..." : "Type a message..."}
+                            disabled={isTyping || isRecording || isTranscribing}
+                            className={`relative w-full px-6 py-4 bg-slate-950/80 border ${isRecording ? 'border-pink-500 shadow-[inset_0_0_15px_rgba(236,72,153,0.3)]' : 'border-slate-700/50'} rounded-xl focus:outline-none focus:border-cyan-500 text-slate-200 placeholder-slate-500 text-base transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] disabled:opacity-50`}
                         />
                     </div>
+
+                    {/* Microphone Button */}
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        type="button"
+                        onClick={isRecording ? stopRecording : startRecording}
+                        disabled={isTyping || isTranscribing}
+                        className={`relative flex items-center justify-center p-4 rounded-xl transition font-semibold flex-shrink-0 border 
+                            ${isRecording
+                                ? 'bg-pink-600/20 text-pink-400 border-pink-500 shadow-[0_0_20px_rgba(236,72,153,0.6)] animate-pulse'
+                                : 'bg-slate-900 border-slate-700/50 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/50 shadow-[0_0_10px_rgba(0,0,0,0.3)]'
+                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                        {isRecording ? (
+                            <div className="relative flex items-center justify-center">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-60"></span>
+                                <div className="w-3 h-3 bg-pink-500 rounded-sm animate-pulse relative z-10"></div>
+                            </div>
+                        ) : (
+                            <Mic size={24} className={isRecording ? "drop-shadow-[0_0_8px_rgba(236,72,153,1)]" : ""} />
+                        )}
+                    </motion.button>
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}

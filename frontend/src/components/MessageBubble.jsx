@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, User, AlertTriangle } from 'lucide-react';
+import { Bot, User, AlertTriangle, Volume2 } from 'lucide-react';
 
-const MessageBubble = ({ message }) => {
+const MessageBubble = ({ message, language, speak }) => {
     const isUser = message.role === 'user';
     const timeString = message.timestamp
         ? new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -28,6 +28,27 @@ const MessageBubble = ({ message }) => {
                 <div className={`absolute ${isUser ? '-right-3 -bottom-3' : '-left-3 -bottom-3'} w-8 h-8 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.8)] z-10 ${isUser ? 'bg-pink-500 border border-pink-300' : 'bg-cyan-500 border border-cyan-300'}`}>
                     {isUser ? <User size={16} className="text-white" /> : <Bot size={16} className="text-white" />}
                 </div>
+
+                {/* Voice Replay Button (Only for AI) */}
+                {!isUser && !message.error && speak && (
+                    <button
+                        onClick={() => {
+                            let textToSpeak = message.text || '';
+                            if (message.structured) {
+                                textToSpeak = [
+                                    message.structured.explanation,
+                                    message.structured.steps?.join('. '),
+                                    message.structured.summary
+                                ].filter(Boolean).join('. ');
+                            }
+                            if (textToSpeak) speak(textToSpeak, language);
+                        }}
+                        className="absolute -left-10 -bottom-1 p-2 rounded-full text-cyan-500/50 hover:text-cyan-400 hover:bg-cyan-900/30 transition-all z-10 group-hover:opacity-100 opacity-0 md:opacity-100"
+                        title="Replay Voice"
+                    >
+                        <Volume2 size={16} className="drop-shadow-[0_0_5px_rgba(0,245,255,0)] hover:drop-shadow-[0_0_8px_rgba(0,245,255,0.8)]" />
+                    </button>
+                )}
 
                 {message.error && (
                     <div className="text-base font-bold flex items-center text-red-400 drop-shadow-[0_0_5px_rgba(239,68,68,0.8)]">
