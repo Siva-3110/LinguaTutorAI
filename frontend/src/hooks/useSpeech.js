@@ -42,8 +42,10 @@ const useSpeech = () => {
             if (synth.state === 'suspended') {
                 synth.resume();
             }
-            const silentUtterance = new SpeechSynthesisUtterance('');
+            const silentUtterance = new SpeechSynthesisUtterance(' '); // Space instead of empty string to prevent hanging queue
             silentUtterance.volume = 0;
+            silentUtterance.rate = 10; // Play as fast as possible
+            silentUtterance.onend = () => console.log("[useSpeech] Silent unlock completed.");
             synth.speak(silentUtterance);
 
             document.removeEventListener('click', unlockAudio);
@@ -64,10 +66,11 @@ const useSpeech = () => {
 
         console.log("[useSpeech] speak called with text:", text, "lang:", lang);
 
-        // To avoid the Chrome "interrupted" bug, DO NOT call .cancel() right before .speak()
-        // if (synthRef.current.speaking || synthRef.current.pending) {
-        //    synthRef.current.cancel();
-        // }
+        // Safely clear the queue if it's stuck, to prevent silent failures
+        if (synthRef.current.speaking || synthRef.current.pending) {
+            console.log("[useSpeech] Queue is busy/stuck. Canceling before new speech.");
+            synthRef.current.cancel();
+        }
 
         if (!text) return;
 
@@ -100,9 +103,11 @@ const useSpeech = () => {
         console.log("[useSpeech] Triggering speech synthesis now.");
 
         // Critical Fix: Wrapping .speak in a timeout prevents the "interrupted" bug in modern browsers
+        // It also gives .cancel() enough time to clear the engine state
         setTimeout(() => {
+            console.log("[useSpeech] Calling synth.speak()...");
             synthRef.current.speak(utterance);
-        }, 50);
+        }, 100);
     }, [voices]);
 
     const stop = useCallback(() => {
