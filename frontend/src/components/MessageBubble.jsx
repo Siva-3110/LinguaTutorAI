@@ -18,15 +18,15 @@ const MessageBubble = ({ message }) => {
             <div
                 className={`max-w-[85%] sm:max-w-[75%] px-5 py-4 rounded-2xl relative shadow-lg
                     ${isUser
-                        ? 'bg-blue-600 text-white rounded-br-none shadow-sm border border-blue-500/50'
+                        ? 'bg-gradient-to-br from-pink-600 to-purple-600 text-white rounded-br-none shadow-[0_0_15px_rgba(255,0,255,0.3)] border border-pink-400/50'
                         : message.error
-                            ? 'bg-red-900/30 text-red-200 border-l-4 border-l-red-500 rounded-bl-none shadow-sm'
-                            : 'glass-panel rounded-bl-none border border-slate-700/50 shadow-sm'
+                            ? 'bg-red-950/80 text-red-200 border-l-4 border-l-red-500 rounded-bl-none shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+                            : 'glass-panel-heavy rounded-bl-none neon-border-blue'
                     }`}
             >
                 {/* Avatar Icon */}
-                <div className={`absolute ${isUser ? '-right-3 -bottom-3' : '-left-3 -bottom-3'} w-8 h-8 rounded-full flex items-center justify-center shadow-sm z-10 ${isUser ? 'bg-blue-500 border border-blue-400' : 'bg-slate-700 border border-slate-600'}`}>
-                    {isUser ? <User size={16} className="text-white" /> : <Bot size={16} className="text-blue-400" />}
+                <div className={`absolute ${isUser ? '-right-3 -bottom-3' : '-left-3 -bottom-3'} w-8 h-8 rounded-full flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.8)] z-10 ${isUser ? 'bg-pink-500 border border-pink-300' : 'bg-cyan-500 border border-cyan-300'}`}>
+                    {isUser ? <User size={16} className="text-white" /> : <Bot size={16} className="text-white" />}
                 </div>
 
                 {message.error && (
@@ -47,17 +47,17 @@ const MessageBubble = ({ message }) => {
                     <div className="space-y-5">
                         {message.structured.explanation && (
                             <div>
-                                <h3 className="font-semibold text-slate-300 mb-1 text-sm">Explanation</h3>
+                                <h3 className="font-bold text-cyan-400 mb-1 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(0,245,255,0.6)]">System Explanation</h3>
                                 <p className="text-slate-200 leading-relaxed">{message.structured.explanation}</p>
                             </div>
                         )}
 
                         {message.structured.steps && Array.isArray(message.structured.steps) && message.structured.steps.length > 0 && (
                             <div>
-                                <h3 className="font-semibold text-slate-300 mb-2 text-sm">Steps</h3>
+                                <h3 className="font-bold text-purple-400 mb-2 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(168,85,247,0.6)]">Execution Sequence</h3>
                                 <ul className="list-decimal pl-5 space-y-2 text-slate-300">
                                     {message.structured.steps.map((step, idx) => (
-                                        <li key={idx} className="leading-relaxed marker:text-blue-400 marker:font-semibold">{step}</li>
+                                        <li key={idx} className="leading-relaxed marker:text-purple-500 marker:font-bold">{step}</li>
                                     ))}
                                 </ul>
                             </div>
@@ -65,11 +65,11 @@ const MessageBubble = ({ message }) => {
 
                         {message.structured.examples && Array.isArray(message.structured.examples) && message.structured.examples.length > 0 && (
                             <div>
-                                <h3 className="font-semibold text-slate-300 mb-2 text-sm">Examples</h3>
-                                <div className="bg-slate-900/40 p-4 rounded-xl border border-slate-700/50 shadow-inner">
-                                    <ul className="list-disc pl-5 space-y-2 text-slate-300 text-sm">
+                                <h3 className="font-bold text-pink-400 mb-2 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(255,0,255,0.6)]">Data Examples</h3>
+                                <div className="bg-slate-900/60 p-4 rounded-xl border border-pink-500/30 shadow-[inset_0_0_10px_rgba(0,0,0,0.5)]">
+                                    <ul className="list-disc pl-5 space-y-2 text-slate-300 font-mono text-sm">
                                         {message.structured.examples.map((ex, idx) => (
-                                            <li key={idx} className="leading-relaxed marker:text-blue-400">{ex}</li>
+                                            <li key={idx} className="leading-relaxed marker:text-pink-500">{ex}</li>
                                         ))}
                                     </ul>
                                 </div>
@@ -78,15 +78,15 @@ const MessageBubble = ({ message }) => {
 
                         {message.structured.summary && (
                             <div>
-                                <h3 className="font-semibold text-slate-300 mb-1 text-sm">Summary</h3>
-                                <p className="text-slate-300 italic">{message.structured.summary}</p>
+                                <h3 className="font-bold text-yellow-400 mb-1 text-xs uppercase tracking-widest drop-shadow-[0_0_5px_rgba(250,204,21,0.6)]">Metric Summary</h3>
+                                <p className="text-yellow-100 italic font-medium">{message.structured.summary}</p>
                             </div>
                         )}
                     </div>
                 )}
 
                 {timeString && (
-                    <div className={`text-[10px] mt-2 opacity-70 ${isUser ? 'text-blue-200 text-right' : 'text-slate-400 text-left'}`}>
+                    <div className={`text-[10px] mt-2 font-mono opacity-80 ${isUser ? 'text-pink-200 text-right' : 'text-cyan-400 text-left'}`}>
                         {timeString}
                     </div>
                 )}
