@@ -1,15 +1,16 @@
-import { GoogleGenAI } from '@google/genai';
+import Groq from 'groq-sdk';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 export const generateAIResponse = async (userMessage, languageCode, subject, history) => {
-    // Initialize dynamically so it catches .env updates without requiring a hard restart of the whole Node process tree
-    const ai = process.env.GOOGLE_API_KEY ? new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY }) : null;
-
-    if (!ai) {
-        throw new Error('Google API Key not configured. Cannot generate response.');
+    // Initialize dynamically so it catches .env updates
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+        throw new Error('Groq API Key not configured. Cannot generate response.');
     }
+
+    const groqClient = new Groq({ apiKey: apiKey });
 
     const langMap = {
         en: 'English',
@@ -52,12 +53,18 @@ Student: ${userMessage}
 Tutor (Respond ONLY with raw JSON format based on the schema above):`;
 
     try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: fullPrompt,
+        const response = await groqClient.chat.completions.create({
+            model: "llama-3.1-8b-instant", // Fast and capable open source model
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: `Chat History:\n${historyText}\n\nStudent: ${userMessage}\nTutor (Respond ONLY with raw JSON format based on the schema above):` }
+            ],
+            temperature: 0.7,
+            max_tokens: 1024,
+            response_format: { type: "json_object" } // Groq supports strict JSON mode
         });
 
-        const content = response.text || '';
+        const content = response.choices[0]?.message?.content || '';
 
         try {
             // Strip out markdown code blocks if the model wrapped it (e.g. ```json ... ```)
@@ -68,7 +75,7 @@ Tutor (Respond ONLY with raw JSON format based on the schema above):`;
             return { explanation: content }; // Graceful fallback
         }
     } catch (error) {
-        console.error("Gemini API Error:", error.message);
-        throw new Error('Failed to generate response using Google GenAI.');
+        console.error("Groq API Error:", error.message);
+        throw new Error('Failed to generate response using Groq Llama 3.');
     }
 };
