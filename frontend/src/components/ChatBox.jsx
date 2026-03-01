@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useChat from '../hooks/useChat';
 import useSpeech from '../hooks/useSpeech';
 import MessageBubble from './MessageBubble';
-import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX } from 'lucide-react';
+import { Send, Globe, Cpu, TerminalSquare, Mic, Volume2, VolumeX, MessageSquarePlus } from 'lucide-react';
 
 const ChatBox = () => {
-    const { messages, isTyping, sendMessage, language, setLanguage } = useChat();
+    const { messages, isTyping, sendMessage, language, setLanguage, clearChat } = useChat();
     const [input, setInput] = useState('');
     const [isListening, setIsListening] = useState(false);
     const [autoPlay, setAutoPlay] = useState(true);
@@ -140,6 +140,19 @@ const ChatBox = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => {
+                            if (window.confirm('Are you sure you want to start a new chat? This will clear your current conversation history.')) {
+                                clearChat();
+                            }
+                        }}
+                        className="hidden md:flex items-center px-4 py-2 rounded-md border text-sm font-medium transition-all shadow-[inset_0_0_10px_rgba(0,0,0,0.2)] bg-slate-900/60 text-slate-300 border-slate-700/50 hover:bg-slate-800 hover:text-white"
+                        title="Start New Chat"
+                    >
+                        <MessageSquarePlus size={16} className="mr-2 text-indigo-400" />
+                        New Chat
+                    </button>
+
                     <button
                         onClick={() => {
                             setAutoPlay(!autoPlay);

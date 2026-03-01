@@ -83,12 +83,25 @@ const useChat = () => {
         }
     };
 
+    const clearChat = () => {
+        setMessages([
+            {
+                role: 'ai',
+                text: 'Hello! I am LinguaTutor AI. What would you like to learn today?',
+                structured: null,
+                timestamp: new Date().toISOString(),
+            }
+        ]);
+        localStorage.removeItem('linguatutor_chat_messages');
+    };
+
     return {
         messages,
         isTyping,
         sendMessage,
         language,
-        setLanguage
+        setLanguage,
+        clearChat
     };
 };
 

@@ -10,7 +10,6 @@ const Sidebar = () => {
         { name: 'AI Tutor', path: '/tutor', icon: Lightbulb },
         { name: 'Quiz', path: '/quiz', icon: BrainCircuit },
         { name: 'Study Rooms', path: '/collab', icon: Users },
-        { name: 'Admin', path: '/admin', icon: Settings },
     ];
 
     return (

@@ -7,7 +7,6 @@ const Home = lazy(() => import('./pages/Home'));
 const Tutor = lazy(() => import('./pages/Tutor'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Quiz = lazy(() => import('./pages/Quiz'));
-const Admin = lazy(() => import('./pages/Admin'));
 const RoomList = lazy(() => import('./pages/RoomList'));
 const RoomChat = lazy(() => import('./pages/RoomChat'));
 
@@ -26,7 +25,6 @@ const AppRoutes = () => {
           <Route path="tutor" element={<Tutor />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="quiz" element={<Quiz />} />
-          <Route path="admin" element={<Admin />} />
           <Route path="collab" element={<RoomList />} />
           <Route path="collab/:roomId" element={<RoomChat />} />
         </Route>
